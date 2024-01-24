@@ -4,6 +4,9 @@ train_data_path = "../data/img_celeba"
 cryptopunk_path = "../data/cryptopunks/imgs/imgs"
 model_path = "weights"
 
+min_width = 224
+min_height = 224
+
 lr_size = 24
 
 batch_size = 48 #224
