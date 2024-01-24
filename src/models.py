@@ -29,7 +29,7 @@ class ConvBlock(nn.Module):
 class UpsampleBlock(nn.Module):
     def __init__(self, in_c, scale_factor):
         super().__init__()
-        self.conv = nn.Conv2d(in_c, in_c * scale_factor ** 2, 3, 1, 1)
+        self.conv = nn.Conv2d(in_c, in_c * scale_factor**2, 3, 1, 1)
         self.ps = nn.PixelShuffle(scale_factor)  # in_c * 4, H, W --> in_c, H*2, W*2
         self.act = nn.PReLU(num_parameters=in_c)
 
@@ -41,11 +41,7 @@ class ResidualBlock(nn.Module):
     def __init__(self, in_channels):
         super().__init__()
         self.block1 = ConvBlock(
-            in_channels,
-            in_channels,
-            kernel_size=3,
-            stride=1,
-            padding=1
+            in_channels, in_channels, kernel_size=3, stride=1, padding=1
         )
         self.block2 = ConvBlock(
             in_channels,
@@ -65,11 +61,26 @@ class ResidualBlock(nn.Module):
 class Generator(nn.Module):
     def __init__(self, in_channels=3, num_channels=64, num_blocks=16):
         super().__init__()
-        self.initial = ConvBlock(in_channels, num_channels, kernel_size=9, stride=1, padding=4, use_bn=False)
-        self.residuals = nn.Sequential(*[ResidualBlock(num_channels) for _ in range(num_blocks)])
-        self.convblock = ConvBlock(num_channels, num_channels, kernel_size=3, stride=1, padding=1, use_act=False)
-        self.upsamples = nn.Sequential(UpsampleBlock(num_channels, 2), UpsampleBlock(num_channels, 2))
-        self.final = nn.Conv2d(num_channels, in_channels, kernel_size=9, stride=1, padding=4)
+        self.initial = ConvBlock(
+            in_channels, num_channels, kernel_size=9, stride=1, padding=4, use_bn=False
+        )
+        self.residuals = nn.Sequential(
+            *[ResidualBlock(num_channels) for _ in range(num_blocks)]
+        )
+        self.convblock = ConvBlock(
+            num_channels,
+            num_channels,
+            kernel_size=3,
+            stride=1,
+            padding=1,
+            use_act=False,
+        )
+        self.upsamples = nn.Sequential(
+            UpsampleBlock(num_channels, 2), UpsampleBlock(num_channels, 2)
+        )
+        self.final = nn.Conv2d(
+            num_channels, in_channels, kernel_size=9, stride=1, padding=4
+        )
 
     def forward(self, x):
         initial = self.initial(x)
@@ -102,7 +113,7 @@ class Discriminator(nn.Module):
         self.classifier = nn.Sequential(
             nn.AdaptiveAvgPool2d((6, 6)),
             nn.Flatten(),
-            nn.Linear(512*6*6, 1024),
+            nn.Linear(512 * 6 * 6, 1024),
             nn.LeakyReLU(0.2, inplace=True),
             nn.Linear(1024, 1),
         )
