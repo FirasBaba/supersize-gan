@@ -14,7 +14,7 @@ import copy
 # size = config.lr_size * 4
 
 class CelebDataset(torch.utils.data.Dataset):
-    def __init__(self, image_list, size, transform=None, is_train=True, crop_proba=None):
+    def __init__(self, image_list, size=None, transform=None, is_train=True, crop_proba=None):
         super().__init__()
         self.is_train = is_train
         self.size = size
@@ -56,11 +56,6 @@ class CelebDataset(torch.utils.data.Dataset):
         else:
             original = copy.deepcopy(img)
             original_size = img.size
-            # img = img.resize((50,50))
-            shape = (3,3,1)
-            kernel = np.ones(shape, dtype=np.float32) / np.prod(shape)
-            numpy_image = convolve(img, kernel, mode='constant', cval=0.0)
-            img = Image.fromarray(numpy_image)
             transform_inference = transforms.Compose([
                 transforms.Resize((original_size[0], original_size[1])),
                 transforms.ToTensor(),
