@@ -129,7 +129,6 @@ resnet_mean = [0.485, 0.456, 0.406]
 resnet_std = [0.229, 0.224, 0.225]
 normalize = transforms.Normalize(mean=resnet_mean, std=resnet_std)
 
-# Training loop
 for epoch in range(args.epochs):
     tldr = tqdm(train_loader)
     lv = 0
@@ -212,6 +211,7 @@ for epoch in range(args.epochs):
                 .reshape(-1, 3, args.train_input_size, args.train_input_size)
                 .numpy()
             )
+        # displaying the first batch of the validation set
         for ith_sample in range(args.batch_size):
             gen_img = gen_hr_img[ith_sample]
             orig_img = high_img[ith_sample]

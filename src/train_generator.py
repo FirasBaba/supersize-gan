@@ -105,7 +105,6 @@ normalize = transforms.Normalize(mean=resnet_mean, std=resnet_std)
 
 optimizer_G = optim.Adam(gen.parameters(), lr=config.lr, betas=(0.9, 0.999))
 
-# Training loop
 for epoch in range(args.epochs):
     tldr = tqdm(train_loader)
     lv = 0
@@ -125,46 +124,46 @@ for epoch in range(args.epochs):
 
         lv += lossG.item()
         tldr.set_postfix(loss_resnet=0.006 * lv / (i + 1), epoch=epoch)
-    if epoch % 10 > -1:
-        ss = args.train_input_size * 4
-        for i, (low_img, high_img) in enumerate((val_loader)):
-            gen.eval()
-            low_img = low_img.to(device)
-            with torch.no_grad():
-                gen_hr_img = (
-                    gen(low_img).to("cpu").reshape(-1, 3, ss, ss).numpy() * 0.5 + 0.5
-                )
-                high_img = high_img.to("cpu").reshape(-1, 3, ss, ss).numpy() * 0.5 + 0.5
-                low_img = low_img.to("cpu").reshape(-1, 3, ss // 4, ss // 4).numpy()
-            for ith_sample in range(args.batch_size):
-                gen_img = gen_hr_img[ith_sample]
-                orig_img = high_img[ith_sample]
-                small_img = low_img[ith_sample]
 
-                small_img = small_img.swapaxes(0, 1).swapaxes(1, 2)
-                gen_img = gen_img.swapaxes(0, 1).swapaxes(1, 2)
-                orig_img = orig_img.swapaxes(0, 1).swapaxes(1, 2)
+    ss = args.train_input_size * 4
+    for i, (low_img, high_img) in enumerate((val_loader)):
+        gen.eval()
+        low_img = low_img.to(device)
+        with torch.no_grad():
+            gen_hr_img = (
+                gen(low_img).to("cpu").reshape(-1, 3, ss, ss).numpy() * 0.5 + 0.5
+            )
+            high_img = high_img.to("cpu").reshape(-1, 3, ss, ss).numpy() * 0.5 + 0.5
+            low_img = low_img.to("cpu").reshape(-1, 3, ss // 4, ss // 4).numpy()
+        for ith_sample in range(args.batch_size):
+            gen_img = gen_hr_img[ith_sample]
+            orig_img = high_img[ith_sample]
+            small_img = low_img[ith_sample]
 
-                concatenated_image = plt.figure(figsize=(10, 5))
-                plt.subplot(1, 3, 1)
-                plt.imshow(small_img)
-                plt.axis("off")
-                plt.subplot(1, 3, 2)
-                plt.imshow(gen_img)
-                plt.axis("off")
-                plt.subplot(1, 3, 3)
-                plt.imshow(orig_img)
-                plt.axis("off")
-                utils.create_directory_if_not_exists(f"resgen/{args.folder_name}")
-                plt.savefig(
-                    f"resgen/{args.folder_name}/val_image_{ith_sample}.png",
-                    bbox_inches="tight",
-                    pad_inches=0,
-                    format="png",
-                )
-                plt.close()
-            break
-        utils.create_directory_if_not_exists(config.model_path)
-        torch.save(
-            gen.state_dict(), os.path.join(config.model_path, f"gen_pretrained.pth")
-        )
+            small_img = small_img.swapaxes(0, 1).swapaxes(1, 2)
+            gen_img = gen_img.swapaxes(0, 1).swapaxes(1, 2)
+            orig_img = orig_img.swapaxes(0, 1).swapaxes(1, 2)
+
+            concatenated_image = plt.figure(figsize=(10, 5))
+            plt.subplot(1, 3, 1)
+            plt.imshow(small_img)
+            plt.axis("off")
+            plt.subplot(1, 3, 2)
+            plt.imshow(gen_img)
+            plt.axis("off")
+            plt.subplot(1, 3, 3)
+            plt.imshow(orig_img)
+            plt.axis("off")
+            utils.create_directory_if_not_exists(f"resgen/{args.folder_name}")
+            plt.savefig(
+                f"resgen/{args.folder_name}/val_image_{ith_sample}.png",
+                bbox_inches="tight",
+                pad_inches=0,
+                format="png",
+            )
+            plt.close()
+        break
+    utils.create_directory_if_not_exists(config.model_path)
+    torch.save(
+        gen.state_dict(), os.path.join(config.model_path, f"gen_pretrained.pth")
+    )
