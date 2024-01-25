@@ -1,8 +1,8 @@
-# SRGAN-CryptoPunk
+# Supersize-GAN
 
 ## Overview
 
-SRGAN-CryptoPunk is a project inspired by the SRGAN paper, implementing a modified version of the SRGAN architecture. The primary goal of this project is to provide a simple and fun implementation while refreshing my legacy knowledge in GANs. The model takes an image as input and scales it by a factor of x4, resulting in an image with 16 times more pixels.
+Supersize-GAN is a fun project inspired by the SRGAN paper, implementing a modified version of the SRGAN architecture. The primary goal of this project is to provide a simple and fun implementation while refreshing my legacy knowledge in GANs. The model takes an image as input and scales it by a factor of x4, resulting in an image with 16 times more pixels.
 
 ## Repository Files
 
@@ -18,12 +18,12 @@ SRGAN-CryptoPunk is a project inspired by the SRGAN paper, implementing a modifi
 
 1. Clone the repository:
 ```
-git clone https://github.com/FirasBaba/srgan-cryptopunk.git
+git clone https://github.com/FirasBaba/supersize-gan.git
 ```
 
 2. Navigate to the project directory:
 ```
-cd srgan-cryptopunk
+cd supersize-gan
 ```
 
 3. Create a new folder for data:
